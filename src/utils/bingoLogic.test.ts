@@ -3,6 +3,7 @@ import {
   generateBoard,
   toggleSquare,
   checkBingo,
+  getBestLineProgress,
   getWinningSquareIds,
   type BingoSquareData,
 } from './bingoLogic';
@@ -207,6 +208,17 @@ describe('bingoLogic', () => {
       expect(result?.type).toBe('diagonal');
     });
 
+    it('should detect a four corners win', () => {
+      const board = generateBoard();
+      [0, 4, 20, 24].forEach((i) => {
+        board[i].isMarked = true;
+      });
+      const result = checkBingo(board);
+      expect(result).not.toBeNull();
+      expect(result?.type).toBe('corners');
+      expect(result?.squares).toEqual([0, 4, 20, 24]);
+    });
+
     it('should work with free space in center', () => {
       const board = generateBoard();
       [10, 11, 12, 13, 14].forEach((i) => {
@@ -303,6 +315,31 @@ describe('bingoLogic', () => {
         board[i].isMarked = true;
       });
       expect(checkBingo(board)).toBeNull();
+    });
+  });
+
+  describe('getBestLineProgress', () => {
+    it('should count the free space as progress for a line', () => {
+      const board = generateBoard();
+      const progress = getBestLineProgress(board);
+      expect(progress).toEqual({ completed: 1, total: 5 });
+    });
+
+    it('should return the highest row progress on the board', () => {
+      const board = generateBoard();
+      board[11].isMarked = true;
+      board[13].isMarked = true;
+      const progress = getBestLineProgress(board);
+      expect(progress).toEqual({ completed: 3, total: 5 });
+    });
+
+    it('should count a fully completed line as 5', () => {
+      const board = generateBoard();
+      [0, 1, 2, 3, 4].forEach((i) => {
+        board[i].isMarked = true;
+      });
+      const progress = getBestLineProgress(board);
+      expect(progress).toEqual({ completed: 5, total: 5 });
     });
   });
 

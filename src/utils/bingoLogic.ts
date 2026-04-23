@@ -117,6 +117,20 @@ export function checkBingo(board: BingoSquareData[]): BingoLine | null {
   return null;
 }
 
+export function getBestLineProgress(board: BingoSquareData[]): { completed: number; total: number } {
+  const lines = getWinningLines();
+  let bestCompleted = 0;
+
+  for (const line of lines) {
+    const completed = line.squares.filter((idx) => board[idx].isMarked).length;
+    if (completed > bestCompleted) {
+      bestCompleted = completed;
+    }
+  }
+
+  return { completed: bestCompleted, total: BOARD_SIZE };
+}
+
 /**
  * Get the square IDs that are part of a winning line
  */

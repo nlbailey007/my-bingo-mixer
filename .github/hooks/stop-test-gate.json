@@ -1,0 +1,6 @@
+{
+  "label": "Stop hook: test gate",
+  "description": "Run the test suite before an agent finishes. If any test fails, the agent is blocked from completing.",
+  "on": "stop",
+  "command": "npm test"
+}
